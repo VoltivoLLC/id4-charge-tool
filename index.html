@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ID4 Charge Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    input, button { font-size: 1.1em; }
+    .output {
+      margin-top: 20px;
+      padding: 15px;
+      background: #eef;
+      border-left: 5px solid #336;
+      width: fit-content;
+    }
+    img { max-width: 200px; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <img src="logo.png" alt="Logo" />
+  <h1>ID4 Charge Tool</h1>
+  <label for="precharge">Starting battery % (0‑79): </label>
+  <input type="number" id="precharge" min="0" max="79" value="30" />
+  <button onclick="calculate()">Calculate</button>
+  <div id="result" class="output"></div>
+
+  <script>
+    function calculate() {
+      const pre = parseFloat(document.getElementById('precharge').value);
+      const usableKWh = 77;
+      const target = 80;
+      const eff = 0.90;
+      const costKWh = 0.1912;
+
+      if (pre < 0 || pre >= target) {
+        return document.getElementById('result').innerHTML =
+          "Enter a number between 0 and 79.";
+      }
+
+      const pct = target - pre;
+      const battery = pct * (usableKWh / 100);
+      const wall = battery / eff;
+      const cost = wall * costKWh;
+
+      document.getElementById('result').innerHTML = `
+        <strong>🔋 Battery added:</strong> ${battery.toFixed(2)} kWh<br>
+        <strong>⚡ Energy drawn:</strong> ${wall.toFixed(2)} kWh<br>
+        <strong>💵 Cost:</strong> $${cost.toFixed(2)}
+      `;
+    }
+  </script>
+</body>
+</html>
